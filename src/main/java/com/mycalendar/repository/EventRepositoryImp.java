@@ -64,7 +64,7 @@ public class EventRepositoryImp implements EventRepository {
         query.append("select e.id,u.NAME as username,e.CREATED_DATE,e.UPDATED_DATE " +
                 "from events e inner join USERS U " +
                 "on e.USER_ID = U.ID " +
-                "where 1=1 ");
+                "where 1=1 AND e.delyn = 'N' ");
 
         if (eventRequestDto.getName() != null && eventRequestDto.getUpdated_date() != null) {
             query.append("AND DATE_FORMAT(e.UPDATED_DATE,'%Y-%m-%d') = ?  AND u.name = ?");
@@ -89,7 +89,7 @@ public class EventRepositoryImp implements EventRepository {
     public EventResponseDto findEventById(Integer id) {
         List<EventResponseDto> result = jdbcTemplate.query("select e.id,u.NAME as username, e.CREATED_DATE,e.UPDATED_DATE " +
                 "from users u inner join EVENTS E on u.ID = E.USER_ID " +
-                "where e.id = ?", eventRowMapper(), id);
+                "where e.delyn = 'N' AND e.id = ?", eventRowMapper(), id);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
     @Transactional
@@ -97,7 +97,7 @@ public class EventRepositoryImp implements EventRepository {
     public int updateEvent(Integer id, EventRequestDto dto) {
         int updateRowName = jdbcTemplate.update("update users " +
                 "set name = ? " +
-                "where id=(select USER_ID " +
+                "where delyn='N' AND id=(select USER_ID " +
                 "from events " +
                 "where id = ? and password = ?)", dto.getName(), id, dto.getPassword());
         int updatedRowsEvent = jdbcTemplate.update("update events set TITLE = ?, UPDATED_DATE=now() where id = ? and PASSWORD = ?", dto.getTitle(), id, dto.getPassword());
