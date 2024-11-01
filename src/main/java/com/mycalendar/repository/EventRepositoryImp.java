@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +57,31 @@ public class EventRepositoryImp implements EventRepository {
 
     @Override
     public List<EventResponseDto> findAllEventByDate(EventRequestDto eventRequestDto) {
-        //todo mybatis 처럼 동적쿼리 생성
-       return jdbcTemplate.query("select e.id,u.NAME as username,e.CREATED_DATE,e.UPDATED_DATE " +
-               "from events e inner join USERS U " +
-               "on e.USER_ID = U.ID " +
-               "where DATE_FORMAT(e.UPDATED_DATE,'%Y-%m-%d') = ?  or USER_ID = ?", eventRowMapper(),eventRequestDto.getUpdated_date(), eventRequestDto.getName());
+        StringBuffer query = new StringBuffer();
+        List<String> queryArgs = new ArrayList<>();
+
+        query.append("select e.id,u.NAME as username,e.CREATED_DATE,e.UPDATED_DATE " +
+                "from events e inner join USERS U " +
+                "on e.USER_ID = U.ID " +
+                "where 1=1 ");
+
+        if (eventRequestDto.getName() != null && eventRequestDto.getUpdated_date() != null) {
+            query.append("AND DATE_FORMAT(e.UPDATED_DATE,'%Y-%m-%d') = ?  AND u.name = ?");
+            queryArgs.add(0,eventRequestDto.getUpdated_date());
+            queryArgs.add(1,eventRequestDto.getName());
+        } else if (eventRequestDto.getUpdated_date() != null) {
+            query.append("AND DATE_FORMAT(e.UPDATED_DATE,'%Y-%m-%d') = ?");
+            queryArgs.add(0,eventRequestDto.getUpdated_date());
+        } else if (eventRequestDto.getName()!=null) {
+            query.append("AND u.name = ?");
+            queryArgs.add(0,eventRequestDto.getName());
+        }
+
+
+        /* Lastly, execute the query */
+        return this.jdbcTemplate.query(query.toString(),
+                eventRowMapper(),queryArgs.toArray());
+
     }
 
     @Override
