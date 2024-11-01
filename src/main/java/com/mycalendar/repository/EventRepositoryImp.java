@@ -48,6 +48,7 @@ public class EventRepositoryImp implements EventRepository {
         parameters.put("title", dto.getTitle());
         parameters.put("created_date", LocalDateTime.now());
         parameters.put("updated_date", LocalDateTime.now());
+        parameters.put("delyn", "N");
 
         Number key = insert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -109,7 +110,7 @@ public class EventRepositoryImp implements EventRepository {
 
     @Override
     public int deleteEvent(Integer id,EventRequestDto requestDto) {
-        return jdbcTemplate.update("delete from events where id=? and password=?;", id,requestDto.getPassword());
+        return jdbcTemplate.update("update  events set delyn='Y' where id=? and password=?;", id,requestDto.getPassword());
     }
 
     private RowMapper<String> userIdRowMapper() {
