@@ -32,7 +32,7 @@ public class EventRepositoryImp implements EventRepository {
     @Override
     public EventResponseDto createEvent(EventRequestDto dto) {
         //name 값 기준으로 user id 값 가져오기
-        List<String> selectIdFromUsers = jdbcTemplate.query("select id from users", userIdRowMapper());
+        List<String> selectIdFromUsers = jdbcTemplate.query("select id from users where name = ?", userIdRowMapper(),dto.getName());
         if (selectIdFromUsers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

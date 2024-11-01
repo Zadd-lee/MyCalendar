@@ -35,7 +35,6 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDto> findEventById(@PathVariable(value = "id") Integer id) {
         log.info("findEventById");
-        //todo 여기서 id값이 잘못 들어왔을 경우, 400 코드 리턴이 필요한데, 이럴 경우 어떻게 해야할지
         EventResponseDto event = service.findEventById(id);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
