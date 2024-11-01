@@ -9,7 +9,7 @@
 
 ### 일정 등록
 - Method : POST
-- URI:/calendar/events
+- URI:/events
 - Request
   - PathVariable : 없음
   - RequestBody :
@@ -31,7 +31,7 @@
 
 ### 일정 단건 조회
 - Method : GET
-- URI:/calendar/events/{id}
+- URI:/events/{id}
 - Request
     - PathVariable :
 
@@ -57,7 +57,7 @@
 
 ### 일정 목록 조회
 - Method : GET
-- URI:/calendar/events
+- URI:/events
 - Request
     - PathVariable : 
 - RequestBody :  
@@ -87,7 +87,7 @@
 
 ### 일정 수정
 - Method : PUT
-- URI:/calendar/events/{id}
+- URI:/events/{id}
 - Request
     - PathVariable :
   
@@ -113,7 +113,7 @@
 
 ### 일정 삭제
 - Method : POST
-- URI:/calendar/events/{id}
+- URI:/events/{id}
 - Request
     - PathVariable :
   

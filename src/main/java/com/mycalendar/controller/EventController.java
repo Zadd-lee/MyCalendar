@@ -13,8 +13,9 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/calendar/events")
+@RequestMapping("/events")
 public class EventController {
+    //todo 이 컨트롤러에 userid 를 가져오는 객체를 400으로 리턴하게 필터링
 
     private final EventService service;
 
