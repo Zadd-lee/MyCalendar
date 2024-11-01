@@ -2,10 +2,9 @@ package com.mycalendar.dto;
 
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class EventRequestDto {
+    int userId;
     String name;
     String password;
     String title;
