@@ -16,4 +16,6 @@ public interface EventRepository {
     int updateEvent(Integer id, EventRequestDto dto);
 
     int deleteEvent(Integer id,EventRequestDto dto);
+
+    List<EventResponseDto> findEventsWithPaging(int pageNum, int size);
 }

@@ -16,4 +16,6 @@ public interface EventService {
     EventResponseDto updateEvent(Integer id, EventRequestDto eventRequestDto);
 
     void deleteEvent(Integer id, EventRequestDto eventRequestDto);
+
+    List<EventResponseDto> findEventsWithPaging(int pageNum, int size);
 }

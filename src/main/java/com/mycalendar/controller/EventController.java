@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -30,6 +31,15 @@ public class EventController {
     public ResponseEntity<List<EventResponseDto>> findAllEventsByDate(@RequestBody EventRequestDto eventRequestDto) {
         log.info("findAllEventsByDate");
         List<EventResponseDto> dto = service.findAllEventByDate(eventRequestDto);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping({"page", "page?pageNum={pageNum}&size={size}"})
+    public ResponseEntity<List<EventResponseDto>> findEventsWithPaging(
+            @RequestParam(value = "pageNum") int pageNum,
+            @RequestParam(value = "size") int size
+    ) {
+        List<EventResponseDto> dto= service.findEventsWithPaging(pageNum, size);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

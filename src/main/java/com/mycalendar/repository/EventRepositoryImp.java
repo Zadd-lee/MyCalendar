@@ -92,6 +92,15 @@ public class EventRepositoryImp implements EventRepository {
                 "where e.delyn = 'N' AND e.id = ?", eventRowMapper(), id);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+    @Override
+    public List<EventResponseDto> findEventsWithPaging(int pageNum, int size) {
+        List<EventResponseDto> result = jdbcTemplate.query("select e.id,u.NAME as username, e.CREATED_DATE,e.UPDATED_DATE " +
+                "from users u inner join EVENTS E on u.ID = E.USER_ID " +
+                "where e.delyn = 'N'" +
+                "limit ? offset ?", eventRowMapper(), size, pageNum * size);
+        return result;
+    }
+
     @Transactional
     @Override
     public int updateEvent(Integer id, EventRequestDto dto) {

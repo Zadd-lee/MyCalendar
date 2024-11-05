@@ -79,4 +79,11 @@ public class EventServiceImp implements EventService{
         }
 
     }
+
+    @Override
+    public List<EventResponseDto> findEventsWithPaging(int pageNum, int size) {
+        List<EventResponseDto> result = repository.findEventsWithPaging(pageNum, size);
+
+        return result;
+    }
 }
