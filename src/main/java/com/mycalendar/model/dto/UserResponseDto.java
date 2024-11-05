@@ -1,4 +1,4 @@
-package com.mycalendar.dto;
+package com.mycalendar.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

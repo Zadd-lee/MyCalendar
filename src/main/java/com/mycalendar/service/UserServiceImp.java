@@ -1,6 +1,6 @@
 package com.mycalendar.service;
 
-import com.mycalendar.dto.UserResponseDto;
+import com.mycalendar.model.dto.UserResponseDto;
 import com.mycalendar.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

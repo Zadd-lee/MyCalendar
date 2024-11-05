@@ -1,6 +1,6 @@
 package com.mycalendar.controller;
 
-import com.mycalendar.dto.UserResponseDto;
+import com.mycalendar.model.dto.UserResponseDto;
 import com.mycalendar.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

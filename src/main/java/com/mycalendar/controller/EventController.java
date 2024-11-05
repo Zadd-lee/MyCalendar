@@ -1,7 +1,7 @@
 package com.mycalendar.controller;
 
-import com.mycalendar.dto.EventRequestDto;
-import com.mycalendar.dto.EventResponseDto;
+import com.mycalendar.model.dto.EventRequestDto;
+import com.mycalendar.model.dto.EventResponseDto;
 import com.mycalendar.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

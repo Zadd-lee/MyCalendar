@@ -1,8 +1,8 @@
 package com.mycalendar.repository;
 
 
-import com.mycalendar.dto.EventRequestDto;
-import com.mycalendar.dto.EventResponseDto;
+import com.mycalendar.model.dto.EventRequestDto;
+import com.mycalendar.model.dto.EventResponseDto;
 
 import java.util.List;
 

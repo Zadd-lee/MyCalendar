@@ -1,7 +1,7 @@
 package com.mycalendar.service;
 
-import com.mycalendar.dto.EventRequestDto;
-import com.mycalendar.dto.EventResponseDto;
+import com.mycalendar.model.dto.EventRequestDto;
+import com.mycalendar.model.dto.EventResponseDto;
 import com.mycalendar.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
