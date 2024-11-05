@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +22,14 @@ public class EventController {
     private final EventService service;
 
     @PostMapping
-    public ResponseEntity<EventResponseDto> createEvent(@RequestBody EventRequestDto eventRequestDto) {
+    public ResponseEntity<EventResponseDto> createEvent(@Validated @RequestBody EventRequestDto eventRequestDto) {
         log.info("createEvent");
         EventResponseDto event = service.createEvent(eventRequestDto);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<EventResponseDto>> findAllEventsByDate(@RequestBody EventRequestDto eventRequestDto) {
+    public ResponseEntity<List<EventResponseDto>> findAllEventsByDate(@Validated @RequestBody EventRequestDto eventRequestDto) {
         log.info("findAllEventsByDate");
         List<EventResponseDto> dto = service.findAllEventByDate(eventRequestDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -52,7 +53,7 @@ public class EventController {
 
     @PutMapping("/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(@PathVariable(value = "id") Integer id,
-                                                        @RequestBody EventRequestDto eventRequestDto) {
+                                                        @Validated @RequestBody EventRequestDto eventRequestDto) {
         log.info("update event");
         EventResponseDto event = service.updateEvent(id, eventRequestDto);
         return new ResponseEntity<>(event, HttpStatus.OK);
@@ -60,7 +61,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable(value = "id") Integer id,
-                                            @RequestBody EventRequestDto eventRequestDto) {
+                                            @Validated @RequestBody EventRequestDto eventRequestDto) {
         log.info("delete event");
         service.deleteEvent(id, eventRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
