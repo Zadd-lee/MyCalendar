@@ -1,12 +1,12 @@
 package com.mycalendar.service;
 
+import com.mycalendar.common.constants.EventErrorCode;
+import com.mycalendar.common.exception.CustomException;
 import com.mycalendar.model.dto.EventRequestDto;
 import com.mycalendar.model.dto.EventResponseDto;
 import com.mycalendar.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,11 +19,12 @@ public class EventServiceImp implements EventService{
     @Override
     public EventResponseDto createEvent(EventRequestDto dto) {
 
-        //유효성 검사
+        //유효성 검사 - 작성자 이름 기준
         if (dto.getName() == null || dto.getPassword() == null
                 || dto.getTitle() == null||dto.getUpdated_date()!=null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CustomException(EventErrorCode.NOT_FOUND);
         }
+        //유효성 검사 - 작성자 ID 기준
 
         return repository.createEvent(dto);
     }
@@ -31,22 +32,23 @@ public class EventServiceImp implements EventService{
     @Override
     public EventResponseDto findEventById(Integer id) {
         EventResponseDto result = repository.findEventById(id);
-        //값이 없을 경우 404
-        if (result == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        //결과값의 유무를 검사
+        //값이 없으면 EventErrorCode.NOT_FOUNT 리턴
+        validateResult(result);
         return result;
     }
 
     @Override
     public List<EventResponseDto> findAllEventByDate(EventRequestDto eventRequestDto)   {
         if(eventRequestDto.getPassword()!=null||eventRequestDto.getTitle()!=null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CustomException(EventErrorCode.INVALID_FIELD);
         }
         List<EventResponseDto> allEventByDate = repository.findAllEventByDate(eventRequestDto);
-        if (allEventByDate.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+
+
+        //결과값의 유무를 검사
+        //값이 없으면 EventErrorCode.NOT_FOUNT 리턴
+        validateResult(allEventByDate.size());
 
         return allEventByDate;
     }
@@ -56,14 +58,14 @@ public class EventServiceImp implements EventService{
 
         if (dto.getName() == null || dto.getTitle() == null
                 || dto.getPassword() == null || dto.getUpdated_date() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CustomException(EventErrorCode.INVALID_FIELD);
         }
 
         int i = repository.updateEvent(id, dto);
 
-        if (i == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        //결과값의 유무를 검사
+        //값이 없으면 EventErrorCode.NOT_FOUNT 리턴
+        validateResult(i);
         return repository.findEventById(id);
     }
 
@@ -71,12 +73,14 @@ public class EventServiceImp implements EventService{
     public void deleteEvent(Integer id, EventRequestDto eventRequestDto) {
         if (eventRequestDto.getPassword() == null || eventRequestDto.getName() != null
                 || eventRequestDto.getTitle() != null||eventRequestDto.getUpdated_date()!=null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CustomException(EventErrorCode.INVALID_FIELD);
         }
         int row = repository.deleteEvent(id,eventRequestDto);
-        if (row == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+
+
+        //결과값의 유무를 검사
+        //값이 없으면 EventErrorCode.NOT_FOUNT 리턴
+        validateResult(row);
 
     }
 
@@ -84,6 +88,23 @@ public class EventServiceImp implements EventService{
     public List<EventResponseDto> findEventsWithPaging(int pageNum, int size) {
         List<EventResponseDto> result = repository.findEventsWithPaging(pageNum, size);
 
+        //결과값의 유무를 검사
+        //값이 없으면 EventErrorCode.NOT_FOUNT 리턴
+        validateResult(result.size());
+
+
         return result;
+    }
+
+    private static void validateResult(int row) {
+        if (row == 0) {
+            throw new CustomException(EventErrorCode.NOT_FOUND);
+        }
+    }
+
+    private static void validateResult(EventResponseDto result) {
+        if (result == null) {
+            throw new CustomException(EventErrorCode.NOT_FOUND);
+        }
     }
 }

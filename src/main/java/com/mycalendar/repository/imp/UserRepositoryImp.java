@@ -1,6 +1,7 @@
-package com.mycalendar.repository;
+package com.mycalendar.repository.imp;
 
 import com.mycalendar.model.dto.UserResponseDto;
+import com.mycalendar.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class UserRepositoryImp implements UserRepository{
+public class UserRepositoryImp implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public UserRepositoryImp(DataSource dataSource) {

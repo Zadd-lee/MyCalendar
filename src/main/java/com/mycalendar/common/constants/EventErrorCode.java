@@ -1,4 +1,4 @@
-package com.mycalendar.constants;
+package com.mycalendar.common.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,8 @@ public enum EventErrorCode implements ErrorCode {
 
     PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "비밀번호가 정확하지 않습니다"),
     INVALID_ID(HttpStatus.BAD_REQUEST, "올바르지 않은 ID 값입니다"),
+    INVALID_FIELD(HttpStatus.BAD_REQUEST,"필수 필드 누락입니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND,"일정을 찾을 수 없습니다.")
     ;
 
 

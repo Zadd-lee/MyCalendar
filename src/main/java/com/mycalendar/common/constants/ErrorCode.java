@@ -1,4 +1,4 @@
-package com.mycalendar.constants;
+package com.mycalendar.common.constants;
 
 import org.springframework.http.HttpStatus;
 

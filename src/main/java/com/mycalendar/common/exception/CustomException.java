@@ -1,6 +1,6 @@
-package com.mycalendar.exception;
+package com.mycalendar.common.exception;
 
-import com.mycalendar.constants.ErrorCode;
+import com.mycalendar.common.constants.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

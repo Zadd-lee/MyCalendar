@@ -1,8 +1,8 @@
-package com.mycalendar.exception;
+package com.mycalendar.common.exception;
 
-import com.mycalendar.constants.CommonErrorCode;
-import com.mycalendar.constants.ErrorCode;
-import com.mycalendar.exception.dto.ErrorResponse;
+import com.mycalendar.common.constants.CommonErrorCode;
+import com.mycalendar.common.constants.ErrorCode;
+import com.mycalendar.common.exception.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

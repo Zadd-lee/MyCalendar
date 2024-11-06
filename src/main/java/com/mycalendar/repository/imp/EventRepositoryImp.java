@@ -1,7 +1,8 @@
-package com.mycalendar.repository;
+package com.mycalendar.repository.imp;
 
 import com.mycalendar.model.dto.EventRequestDto;
 import com.mycalendar.model.dto.EventResponseDto;
+import com.mycalendar.repository.EventRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

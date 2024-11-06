@@ -1,4 +1,4 @@
-package com.mycalendar.exception.dto;
+package com.mycalendar.common.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
