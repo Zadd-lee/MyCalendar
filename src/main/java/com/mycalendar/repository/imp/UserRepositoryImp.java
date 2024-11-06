@@ -23,16 +23,30 @@ public class UserRepositoryImp implements UserRepository {
 
     @Override
     public User findUserById(String id) {
-        List<User> result = jdbcTemplate.query("select * from users where id = ?", userRowMapper(), id);
+        List<User> result = jdbcTemplate.query("select id,name from users where id = ?", userRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(()->new CustomException(UserErrorCode.NOT_FOUND));
     }
 
     @Override
     public User findUserByName(String name) {
-        List<User> result = jdbcTemplate.query("select * from users where name ='%?%'",
+        List<User> result = jdbcTemplate.query("select id,name from users where name =?",
                 userRowMapper(), name);
 
+        return result.stream().findAny().orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND));
+    }
+
+    @Override
+    public int updateUserName(User user) {
+        int updatedRows = jdbcTemplate.update("update users set name = ? where id = ?;", user.getName(), user.getId());
+        return updatedRows;
+
+    }
+
+    @Override
+    public User findUserByEventId(String id) {
+        List<User> result = jdbcTemplate.query("select u.id,u.name from users u inner join events e on u.id=e.user_id where e.id =?",
+                userRowMapper(), id);
         return result.stream().findAny().orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND));
     }
 
@@ -42,11 +56,7 @@ public class UserRepositoryImp implements UserRepository {
             public User mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new User(
                         rs.getString("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("created_date"),
-                        rs.getString("updated_date")
-
+                        rs.getString("name")
                 );
             }
         };

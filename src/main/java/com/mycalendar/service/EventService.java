@@ -1,21 +1,21 @@
 package com.mycalendar.service;
 
-import com.mycalendar.model.dto.EventRequestDto;
-import com.mycalendar.model.dto.EventResponseDto;
+import com.mycalendar.model.Event;
+import com.mycalendar.model.User;
 
 import java.util.List;
 
 public interface EventService {
-    EventResponseDto createEvent(EventRequestDto dto);
+    Event createEvent(Event event, User user);
 
 
-    EventResponseDto findEventById(Integer id);
+    Event findEventById(String id);
 
-    List<EventResponseDto> findAllEventByDate(EventRequestDto eventRequestDto);
+    List<Event> findAllEventByDate(Event event,User user);
 
-    EventResponseDto updateEvent(Integer id, EventRequestDto eventRequestDto);
+    Event updateEvent(Event event,User user);
 
-    void deleteEvent(Integer id, EventRequestDto eventRequestDto);
+    void deleteEvent(Event event);
 
-    List<EventResponseDto> findEventsWithPaging(int pageNum, int size);
+    List<Event> findEventsWithPaging(int pageNum, int size);
 }

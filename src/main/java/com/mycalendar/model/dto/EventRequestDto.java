@@ -2,13 +2,16 @@ package com.mycalendar.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventRequestDto {
 
     String userId;
-    String name;
 
     @NotNull
     String password;
@@ -18,4 +21,8 @@ public class EventRequestDto {
     @Size(max = 200)
     String title;
     String updated_date;
+
+
+    String name;
+
 }

@@ -2,11 +2,9 @@ package com.mycalendar.model.dto;
 
 import com.mycalendar.model.User;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class UserResponseDto {
     String id;
     String name;

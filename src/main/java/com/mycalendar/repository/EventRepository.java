@@ -2,21 +2,19 @@ package com.mycalendar.repository;
 
 
 import com.mycalendar.model.Event;
-import com.mycalendar.model.User;
-import com.mycalendar.model.dto.EventRequestDto;
 
 import java.util.List;
 
 public interface EventRepository {
-    Event createEvent(EventRequestDto dto, User user);
+    int createEvent(Event event);
 
-    List<Event> findAllEventByDate(EventRequestDto eventRequestDto);
+    List<Event> findAllEventByDate(Event event);
 
-    Event findEventById(Integer id);
+    Event findEventById(String id);
 
-    int updateEvent(Integer id, EventRequestDto dto);
+    int updateEvent(Event event);
 
-    int deleteEvent(Integer id,EventRequestDto dto);
+    int deleteEvent(Event event);
 
     List<Event> findEventsWithPaging(int pageNum, int size);
 }

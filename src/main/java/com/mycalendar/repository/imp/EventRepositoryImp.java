@@ -1,18 +1,15 @@
 package com.mycalendar.repository.imp;
 
+import com.mycalendar.common.constants.EventErrorCode;
+import com.mycalendar.common.exception.CustomException;
 import com.mycalendar.model.Event;
-import com.mycalendar.model.User;
-import com.mycalendar.model.dto.EventRequestDto;
-import com.mycalendar.model.dto.EventResponseDto;
 import com.mycalendar.repository.EventRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -33,44 +30,47 @@ public class EventRepositoryImp implements EventRepository {
 
     @Transactional
     @Override
-    public Event createEvent(EventRequestDto dto, User user) {
-        //일정 생성
+    public int createEvent(Event event) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.withTableName("events").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("userId",user.getId());
-        parameters.put("password", dto.getPassword());
-        parameters.put("title", dto.getTitle());
+        parameters.put("userId",event.getUserId());
+        parameters.put("password", event.getPassword());
+        parameters.put("title", event.getTitle());
         parameters.put("created_date", LocalDateTime.now());
         parameters.put("updated_date", LocalDateTime.now());
         parameters.put("delyn", "N");
 
         Number key = insert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return findEventById(key.intValue());
+        return key.intValue();
     }
 
 
     @Override
-    public List<Event> findAllEventByDate(EventRequestDto eventRequestDto) {
+    public Event findEventById(String id) {
+        List<Event> result = jdbcTemplate.query("select * from events where delyn = 'N' and id = ?", eventRowMapper(), id);
+        return result.stream()
+                .findAny().orElseThrow(() -> new CustomException(EventErrorCode.NOT_FOUND));
+    }
+
+    @Override
+    public List<Event> findAllEventByDate(Event event) {
         StringBuffer query = new StringBuffer();
         List<String> queryArgs = new ArrayList<>();
 
-        query.append("select e.id,u.NAME as username,e.CREATED_DATE,e.UPDATED_DATE " +
-                "from events e inner join USERS U " +
-                "on e.USER_ID = U.ID " +
-                "where 1=1 AND e.delyn = 'N' ");
+        query.append("select * from events where 1=1 AND delyn = 'N' ");
 
-        if (eventRequestDto.getName() != null && eventRequestDto.getUpdated_date() != null) {
-            query.append("AND DATE_FORMAT(e.UPDATED_DATE,'%Y-%m-%d') = ?  AND u.name = ?");
-            queryArgs.add(0,eventRequestDto.getUpdated_date());
-            queryArgs.add(1,eventRequestDto.getName());
-        } else if (eventRequestDto.getUpdated_date() != null) {
+        if (event.getUserId() != null && event.getUpdated_date() != null) {
+            query.append("AND DATE_FORMAT(UPDATED_DATE,'%Y-%m-%d') = ?  AND user_id = ?");
+            queryArgs.add(0,event.getUpdated_date());
+            queryArgs.add(1,event.getUserId());
+        } else if (event.getUpdated_date() != null) {
             query.append("AND DATE_FORMAT(e.UPDATED_DATE,'%Y-%m-%d') = ?");
-            queryArgs.add(0,eventRequestDto.getUpdated_date());
-        } else if (eventRequestDto.getName()!=null) {
-            query.append("AND u.name = ?");
-            queryArgs.add(0,eventRequestDto.getName());
+            queryArgs.add(0,event.getUpdated_date());
+        } else if (event.getUserId()!=null) {
+            query.append("AND user_id = ?");
+            queryArgs.add(0,event.getUserId());
         }
 
 
@@ -80,41 +80,23 @@ public class EventRepositoryImp implements EventRepository {
 
     }
 
+
     @Override
-    public Event findEventById(Integer id) {
-        List<Event> result = jdbcTemplate.query("select e.id,u.NAME as username, e.CREATED_DATE,e.UPDATED_DATE " +
-                "from users u inner join EVENTS E on u.ID = E.USER_ID " +
-                "where e.delyn = 'N' AND e.id = ?", eventRowMapper(), id);
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-    @Override
-    public List<EventResponseDto> findEventsWithPaging(int pageNum, int size) {
-        List<EventResponseDto> result = jdbcTemplate.query("select e.id,u.NAME as username, e.CREATED_DATE,e.UPDATED_DATE " +
-                "from users u inner join EVENTS E on u.ID = E.USER_ID " +
-                "where e.delyn = 'N'" +
-                "limit ? offset ?", eventRowMapper(), size, pageNum * size);
+    public List<Event> findEventsWithPaging(int pageNum, int size) {
+        List<Event> result = jdbcTemplate.query("select * from events where delyn = 'N' limit ? offset ?", eventRowMapper(), size, pageNum * size);
         return result;
     }
 
-    @Transactional
     @Override
-    public int updateEvent(Integer id, EventRequestDto dto) {
-        int updateRowName = jdbcTemplate.update("update users " +
-                "set name = ? " +
-                "where delyn='N' AND id=(select USER_ID " +
-                "from events " +
-                "where id = ? and password = ?)", dto.getName(), id, dto.getPassword());
-        int updatedRowsEvent = jdbcTemplate.update("update events set TITLE = ?, UPDATED_DATE=now() where id = ? and PASSWORD = ?", dto.getTitle(), id, dto.getPassword());
-        if (updateRowName == 0 || updatedRowsEvent==0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public int updateEvent(Event event) {
+        int updatedRows = jdbcTemplate.update("update events set TITLE = ?, UPDATED_DATE=now() where id = ? and PASSWORD = ?", event.getTitle(),event.getId(),event.getPassword());
 
-        return findEventById(id).getId();
+        return updatedRows;
     }
 
     @Override
-    public int deleteEvent(Integer id,EventRequestDto requestDto) {
-        return jdbcTemplate.update("update  events set delyn='Y' where id=? and password=?;", id,requestDto.getPassword());
+    public int deleteEvent(Event event) {
+        return jdbcTemplate.update("update events  set delyn='Y'  where id=?;", event.getId());
     }
 
     private RowMapper<String> userIdRowMapper() {
@@ -126,13 +108,15 @@ public class EventRepositoryImp implements EventRepository {
         };
     }
 
-    private RowMapper<EventResponseDto> eventRowMapper() {
-        return new RowMapper<EventResponseDto>() {
+    private RowMapper<Event> eventRowMapper() {
+        return new RowMapper<Event>() {
             @Override
-            public EventResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new EventResponseDto(
-                        rs.getInt("id"),
-                        rs.getString("username"),
+            public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Event(
+                        rs.getString("id"),
+                        rs.getString("user_id"),
+                        rs.getString("password"),
+                        rs.getString("title"),
                          rs.getString("created_date"),
                          rs.getString("updated_date")
                 );
