@@ -6,9 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class User {
-    Integer id;
+    String id;
     String name;
     String email;
     String created_date;
     String updated_date;
+
 }

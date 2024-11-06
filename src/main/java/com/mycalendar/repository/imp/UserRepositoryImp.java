@@ -22,7 +22,7 @@ public class UserRepositoryImp implements UserRepository {
     }
 
     @Override
-    public User findUserById(Integer id) {
+    public User findUserById(String id) {
         List<User> result = jdbcTemplate.query("select * from users where id = ?", userRowMapper(), id);
 
         return result.stream().findAny().orElseThrow(()->new CustomException(UserErrorCode.NOT_FOUND));
@@ -33,7 +33,7 @@ public class UserRepositoryImp implements UserRepository {
             @Override
             public User mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new User(
-                        rs.getInt("id"),
+                        rs.getString("id"),
                         rs.getString("name"),
                         rs.getString("email"),
                         rs.getString("created_date"),

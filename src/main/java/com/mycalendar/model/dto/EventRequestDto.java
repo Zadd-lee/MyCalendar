@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class EventRequestDto {
 
-    int userId;
+    String userId;
     String name;
 
     @NotNull
