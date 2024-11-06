@@ -1,5 +1,7 @@
 package com.mycalendar.repository.imp;
 
+import com.mycalendar.model.Event;
+import com.mycalendar.model.User;
 import com.mycalendar.model.dto.EventRequestDto;
 import com.mycalendar.model.dto.EventResponseDto;
 import com.mycalendar.repository.EventRepository;
@@ -31,20 +33,12 @@ public class EventRepositoryImp implements EventRepository {
 
     @Transactional
     @Override
-    public EventResponseDto createEvent(EventRequestDto dto) {
-        //name 값 기준으로 user id 값 가져오기
-        List<String> selectIdFromUsers = jdbcTemplate.query("select id from users where name = ?", userIdRowMapper(),dto.getName());
-        if (selectIdFromUsers.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        String userId = selectIdFromUsers.get(0);
-
-
+    public Event createEvent(EventRequestDto dto, User user) {
         //일정 생성
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.withTableName("events").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("userId",userId);
+        parameters.put("userId",user.getId());
         parameters.put("password", dto.getPassword());
         parameters.put("title", dto.getTitle());
         parameters.put("created_date", LocalDateTime.now());
@@ -58,7 +52,7 @@ public class EventRepositoryImp implements EventRepository {
 
 
     @Override
-    public List<EventResponseDto> findAllEventByDate(EventRequestDto eventRequestDto) {
+    public List<Event> findAllEventByDate(EventRequestDto eventRequestDto) {
         StringBuffer query = new StringBuffer();
         List<String> queryArgs = new ArrayList<>();
 
@@ -87,8 +81,8 @@ public class EventRepositoryImp implements EventRepository {
     }
 
     @Override
-    public EventResponseDto findEventById(Integer id) {
-        List<EventResponseDto> result = jdbcTemplate.query("select e.id,u.NAME as username, e.CREATED_DATE,e.UPDATED_DATE " +
+    public Event findEventById(Integer id) {
+        List<Event> result = jdbcTemplate.query("select e.id,u.NAME as username, e.CREATED_DATE,e.UPDATED_DATE " +
                 "from users u inner join EVENTS E on u.ID = E.USER_ID " +
                 "where e.delyn = 'N' AND e.id = ?", eventRowMapper(), id);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

@@ -28,6 +28,14 @@ public class UserRepositoryImp implements UserRepository {
         return result.stream().findAny().orElseThrow(()->new CustomException(UserErrorCode.NOT_FOUND));
     }
 
+    @Override
+    public User findUserByName(String name) {
+        List<User> result = jdbcTemplate.query("select * from users where name ='%?%'",
+                userRowMapper(), name);
+
+        return result.stream().findAny().orElseThrow(() -> new CustomException(UserErrorCode.NOT_FOUND));
+    }
+
     private RowMapper<User> userRowMapper() {
         return new RowMapper<User>() {
             @Override
