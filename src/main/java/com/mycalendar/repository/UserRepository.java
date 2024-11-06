@@ -1,7 +1,7 @@
 package com.mycalendar.repository;
 
-import com.mycalendar.model.dto.UserResponseDto;
+import com.mycalendar.model.User;
 
 public interface UserRepository {
-    UserResponseDto findUserById(Integer id);
+    User findUserById(Integer id);
 }

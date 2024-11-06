@@ -1,12 +1,12 @@
 package com.mycalendar.repository.imp;
 
-import com.mycalendar.model.dto.UserResponseDto;
+import com.mycalendar.common.constants.UserErrorCode;
+import com.mycalendar.common.exception.CustomException;
+import com.mycalendar.model.User;
 import com.mycalendar.repository.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -22,17 +22,17 @@ public class UserRepositoryImp implements UserRepository {
     }
 
     @Override
-    public UserResponseDto findUserById(Integer id) {
-        List<UserResponseDto> result = jdbcTemplate.query("select * from users where id = ?", userRowMapper(), id);
+    public User findUserById(Integer id) {
+        List<User> result = jdbcTemplate.query("select * from users where id = ?", userRowMapper(), id);
 
-        return result.stream().findAny().orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return result.stream().findAny().orElseThrow(()->new CustomException(UserErrorCode.NOT_FOUND));
     }
 
-    private RowMapper<UserResponseDto> userRowMapper() {
-        return new RowMapper<UserResponseDto>() {
+    private RowMapper<User> userRowMapper() {
+        return new RowMapper<User>() {
             @Override
-            public UserResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new UserResponseDto(
+            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new User(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
