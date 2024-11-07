@@ -72,6 +72,7 @@ public class EventRepositoryImp implements EventRepository {
             query.append("AND user_id = ?");
             queryArgs.add(0,event.getUserId());
         }
+        query.append("order by UPDATED_DATE desc");
 
 
         /* Lastly, execute the query */
