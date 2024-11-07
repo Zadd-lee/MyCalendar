@@ -143,16 +143,9 @@ replay_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java
 
-.gradle/
 
 .idea/
 
-gradle/
 
-*.gradle
-
-gradlew
-
-*.bat
 
 *.iml
